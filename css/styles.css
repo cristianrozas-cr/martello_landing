@@ -864,3 +864,27 @@ h1, h2, h3, h4 {
     grid-template-columns: 1.4fr 1fr 1fr;
   }
 }
+
+/* =========================================================
+   Media Query — Ajustes exclusivos para mobile (<768px)
+   No debe afectar tablet (>=768px) ni desktop (>=1024px)
+   ========================================================= */
+@media (max-width: 767px) {
+  /* 1. .hero__inner comparte div con .container y su "padding: 44px 0 0"
+        anulaba el padding horizontal heredado de .container en mobile,
+        dejando títulos/párrafos/botones pegados al borde de la pantalla. */
+  .container {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+
+  /* 2. Con height fija (300px), a mayor ancho de viewport el object-fit:cover
+        escalaba más la imagen y recortaba cada vez más el casco/rostro.
+        aspect-ratio mantiene la misma proporción visible en cualquier
+        ancho de celular, y el object-position deja aire sobre el casco. */
+  .hero__photo {
+    height: auto;
+    aspect-ratio: 4 / 3;
+    object-position: center 12%;
+  }
+}
