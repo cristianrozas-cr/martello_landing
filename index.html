@@ -285,6 +285,9 @@
             <textarea id="message" name="message" rows="4" placeholder="Cuéntanos brevemente sobre tu proyecto..."></textarea>
           </div>
 
+          <!-- Honeypot antispam: campo oculto para humanos, Formspree lo usa para descartar bots -->
+          <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off">
+
           <div class="form-group form-group--full">
             <button type="submit" class="btn btn--primary btn--lg btn--full">Enviar solicitud</button>
             <p class="form-feedback" id="form-feedback" role="status" aria-live="polite"></p>
