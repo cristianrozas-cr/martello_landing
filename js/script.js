@@ -125,8 +125,7 @@ function initCounters() {
 }
 
 /* ---------------------------------------------------------
-   Formulario de contacto: validación básica + submit simulado
-   TODO: conectar a Formspree/Web3Forms cuando esté listo
+   Formulario de contacto: validación básica + envío a Formspree
 --------------------------------------------------------- */
 function initContactForm() {
   const form = document.getElementById('contact-form');
@@ -134,6 +133,8 @@ function initContactForm() {
   if (!form || !feedback) return;
 
   const requiredFields = ['name', 'phone', 'email', 'service'];
+  const submitBtn = form.querySelector('button[type="submit"]');
+  const submitBtnDefaultText = submitBtn ? submitBtn.textContent : '';
 
   form.addEventListener('submit', (event) => {
     event.preventDefault();
@@ -167,10 +168,39 @@ function initContactForm() {
       return;
     }
 
-    // El formulario aún no está conectado a un servicio externo.
-    feedback.textContent = 'Formulario en construcción, vuelve pronto. ¡Gracias por tu interés!';
-    feedback.classList.add('is-success');
-    form.reset();
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Enviando...';
+    }
+    feedback.textContent = '';
+
+    fetch(form.action, {
+      method: 'POST',
+      body: new FormData(form),
+      headers: {
+        Accept: 'application/json',
+      },
+    })
+      .then((response) => {
+        if (response.ok) {
+          feedback.textContent = '¡Gracias por tu mensaje! Te contactaremos a la brevedad.';
+          feedback.classList.add('is-success');
+          form.reset();
+        } else {
+          feedback.textContent = 'No pudimos enviar tu mensaje. Por favor intenta nuevamente o escríbenos por WhatsApp.';
+          feedback.classList.add('is-error');
+        }
+      })
+      .catch(() => {
+        feedback.textContent = 'Hubo un problema de conexión. Por favor intenta nuevamente en unos minutos.';
+        feedback.classList.add('is-error');
+      })
+      .finally(() => {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = submitBtnDefaultText;
+        }
+      });
   });
 
   // Limpia el estado de error apenas el usuario corrige el campo
